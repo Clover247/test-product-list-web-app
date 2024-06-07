@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
-import EditProductModal from "../modals/EditproductModal";
+import styles from './ProductsView.module.scss';
+import EditProductModal from "../../modals/EditProductModal";
 
 interface ProductComment {
   id: string;
@@ -21,6 +22,7 @@ interface Product {
 
 const ProductView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +66,7 @@ const ProductView: React.FC = () => {
 
     try {
       const newCommentObj: ProductComment = {
-        id: Math.random().toString(36).substr(2, 9), // Генерація випадкового ID для коментаря
+        id: Math.random().toString(36).substr(2, 9),
         description: newComment,
         date: new Date().toISOString(),
       };
@@ -74,7 +76,7 @@ const ProductView: React.FC = () => {
       };
       await axios.put(`http://localhost:5000/products/${product.id}`, updatedProduct);
       setProduct(updatedProduct);
-      setNewComment(""); // Очистка поля після додавання коментаря
+      setNewComment("");
     } catch (err) {
       console.error('Failed to add comment', err);
     }
@@ -100,32 +102,43 @@ const ProductView: React.FC = () => {
   if (!product) return <p>Product not found</p>;
 
   return (
-    <div>
-      <h1>{product.name}</h1>
-      <p>Count: {product.count}</p>
-      <p>Weight: {product.weight}</p>
-      <button onClick={() => setIsEditModalOpen(true)}>Edit Product</button>
-      <div>
+    <div className={styles.productContainer}>
+      <button onClick={() => navigate(-1)} className={styles.backButton}>Back</button>
+      <div className={styles.productDetails}>
+        <div className={styles.imageContainer}>
+          <img src={product.imageUrl} alt={product.name} />
+        </div>
+        <div className={styles.productInfo}>
+          <h1 className={styles.productName}>{product.name}</h1>
+          <p>Count: {product.count}</p>
+          <p>Weight: {product.weight}</p>
+          <p>Size: {product.size.width} x {product.size.height}</p>
+          <button onClick={() => setIsEditModalOpen(true)} className={styles.editButton}>Edit Product</button>
+        </div>
+      </div>
+      <div className={styles.commentsSection}>
         <h2>Comments</h2>
-        <ul>
+        <ul className={styles.commentsList}>
           {product.comments.map((comment) => (
-            <li key={comment.id}>
+            <li key={comment.id} className={styles.comment}>
               <input
                 type="text"
                 value={comment.description}
                 onChange={(e) => handleEditComment(comment.id, e.target.value)}
+                className={styles.commentInput}
               />
-              <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
+              <button onClick={() => handleDeleteComment(comment.id)} className={styles.deleteButton}>Delete</button>
             </li>
           ))}
         </ul>
-        <div>
+        <div className={styles.addComment}>
           <textarea
             placeholder="Add a comment"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
+            className={styles.commentTextarea}
           ></textarea>
-          <button onClick={handleAddComment}>Submit</button>
+          <button onClick={handleAddComment} className={styles.submitButton}>Submit</button>
         </div>
       </div>
       <EditProductModal

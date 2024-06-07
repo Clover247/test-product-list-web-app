@@ -2,18 +2,18 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 interface Product {
-  id: number;
+  id: string;
   imageUrl: string;
   name: string;
   count: number;
   size: { width: number; height: number };
   weight: string;
-  comments: Comment[];
+  comments: ProductComment[];
 }
 
-interface Comment {
-  id: number;
-  productId: number;
+interface ProductComment {
+  id: string;
+  productId: string;
   description: string;
   date: string;
 }
@@ -40,7 +40,7 @@ export const addNewProduct = createAsyncThunk('products/addNewProduct', async (n
   return response.data;
 });
 
-export const deleteProduct = createAsyncThunk('products/deleteProduct', async (productId: number) => {
+export const deleteProduct = createAsyncThunk('products/deleteProduct', async (productId: string) => {
   await axios.delete(`http://localhost:5000/products/${productId}`);
   return productId;
 });
@@ -65,7 +65,7 @@ const productsSlice = createSlice({
       .addCase(addNewProduct.fulfilled, (state, action: PayloadAction<Product>) => {
         state.products.push(action.payload);
       })
-      .addCase(deleteProduct.fulfilled, (state, action: PayloadAction<number>) => {
+      .addCase(deleteProduct.fulfilled, (state, action: PayloadAction<string>) => {
         state.products = state.products.filter(product => product.id !== action.payload);
       });
   },
