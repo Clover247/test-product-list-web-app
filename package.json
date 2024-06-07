@@ -1,6 +1,7 @@
 {
   "name": "product-list-app",
   "version": "0.1.0",
+  "homepage": "https://clover247.github.io/test-product-list-web-app/",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.5",
