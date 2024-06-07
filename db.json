@@ -1,0 +1,75 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "imageUrl": "https://via.placeholder.com/150",
+      "name": "Product 1drkjhldkrjgldrgj",
+      "count": 4,
+      "size": {
+        "width": 200,
+        "height": 200
+      },
+      "weight": "200g",
+      "comments": [
+        {
+          "id": "5zq8tb30u",
+          "description": "іяпівпвіпвіпівпівпівп",
+          "date": "2024-06-07T09:49:19.215Z"
+        },
+        {
+          "id": "wyfmwz41c",
+          "description": "фіаіпіпівпіупіпвіп",
+          "date": "2024-06-07T09:49:24.001Z"
+        }
+      ]
+    },
+    {
+      "id": "6d18",
+      "name": "фафцафцафіа",
+      "imageUrl": "іафіафіа",
+      "count": 0,
+      "width": 0,
+      "height": 0,
+      "weight": "іфаіфаіфа",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "comments": []
+    },
+    {
+      "id": "4fcb",
+      "name": "аіпупіуп222222222222222222222222222",
+      "imageUrl": "фацфацаф",
+      "count": 0,
+      "width": 0,
+      "height": 0,
+      "weight": "цафафц",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "comments": [
+        {
+          "id": "hse21tbtp",
+          "description": "aafsaf444444444444444",
+          "date": "2024-06-07T09:49:52.333Z"
+        }
+      ]
+    },
+    {
+      "id": "0076",
+      "name": "цфацфафаі",
+      "imageUrl": "фцафцафіа",
+      "count": 0,
+      "width": 0,
+      "height": 0,
+      "weight": "фцафцафіа",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "comments": []
+    }
+  ]
+}
