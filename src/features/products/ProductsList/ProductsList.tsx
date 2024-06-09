@@ -33,7 +33,9 @@ const ProductsList: React.FC = () => {
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [productIdToRemove, setProductIdToRemove] = useState<string | null>(null);
+  const [productIdToRemove, setProductIdToRemove] = useState<string | null>(
+    null
+  );
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);
   const [sortOption, setSortOption] = useState<string>("alphabetical");
@@ -114,7 +116,9 @@ const ProductsList: React.FC = () => {
             className={styles.productCard}
             onClick={() => handleCardClick(product.id)}
           >
-            <img src={product.imageUrl} alt={product.name} />
+            <div className={styles.imageContainer}>
+              <img src={product.imageUrl} alt={product.name} />
+            </div>
             <div className={styles.productDetails}>
               <h2>{product.name}</h2>
               <p>Count: {product.count}</p>

@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 interface Product {
   id: string;
@@ -30,23 +30,34 @@ const initialState: ProductsState = {
   error: null,
 };
 
-export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
-  const response = await axios.get('http://localhost:5000/products');
-  return response.data;
-});
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-export const addNewProduct = createAsyncThunk('products/addNewProduct', async (newProduct: Omit<Product, 'id'>) => {
-  const response = await axios.post('http://localhost:5000/products', newProduct);
-  return response.data;
-});
+export const fetchProducts = createAsyncThunk(
+  "products/fetchProducts",
+  async () => {
+    const response = await axios.get(`${BASE_URL}/products`);
+    return response.data;
+  }
+);
 
-export const deleteProduct = createAsyncThunk('products/deleteProduct', async (productId: string) => {
-  await axios.delete(`http://localhost:5000/products/${productId}`);
-  return productId;
-});
+export const addNewProduct = createAsyncThunk(
+  "products/addNewProduct",
+  async (newProduct: Omit<Product, "id">) => {
+    const response = await axios.post(`${BASE_URL}/products`, newProduct);
+    return response.data;
+  }
+);
+
+export const deleteProduct = createAsyncThunk(
+  "products/deleteProduct",
+  async (productId: string) => {
+    await axios.delete(`${BASE_URL}/products/${productId}`);
+    return productId;
+  }
+);
 
 const productsSlice = createSlice({
-  name: 'products',
+  name: "products",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -54,20 +65,31 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchProducts.fulfilled, (state, action: PayloadAction<Product[]>) => {
-        state.loading = false;
-        state.products = action.payload;
-      })
+      .addCase(
+        fetchProducts.fulfilled,
+        (state, action: PayloadAction<Product[]>) => {
+          state.loading = false;
+          state.products = action.payload;
+        }
+      )
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch products';
+        state.error = action.error.message || "Failed to fetch products";
       })
-      .addCase(addNewProduct.fulfilled, (state, action: PayloadAction<Product>) => {
-        state.products.push(action.payload);
-      })
-      .addCase(deleteProduct.fulfilled, (state, action: PayloadAction<string>) => {
-        state.products = state.products.filter(product => product.id !== action.payload);
-      });
+      .addCase(
+        addNewProduct.fulfilled,
+        (state, action: PayloadAction<Product>) => {
+          state.products.push(action.payload);
+        }
+      )
+      .addCase(
+        deleteProduct.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.products = state.products.filter(
+            (product) => product.id !== action.payload
+          );
+        }
+      );
   },
 });
 

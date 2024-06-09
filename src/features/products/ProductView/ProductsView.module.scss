@@ -32,27 +32,18 @@
 .productDetails {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   text-align: center;
   margin-bottom: 20px;
-
-  @include respond-to("medium") {
-    flex-direction: row;
-    text-align: left;
-  }
 
   .imageContainer {
     margin-bottom: 20px;
     img {
       max-width: 100%;
-      height: auto;
+      max-height: 300px;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    @include respond-to("medium") {
-      margin-bottom: 0;
-      margin-right: 20px;
     }
   }
 
@@ -108,26 +99,92 @@
       align-items: center;
       margin-bottom: 10px;
 
-      .commentInput {
-        flex: 1;
-        padding: 5px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 1rem;
+      .commentItem {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+
+        @include respond-to("small") {
+          flex-direction: row;
+        }
+
+        .buttons {
+          display: flex;
+          gap: 6px;
+          flex-direction: column;
+          width: 100%;
+
+          .editButton {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+    
+            &:hover {
+              background-color: #0056b3;
+            }
+          }
+    
+          .deleteButton {
+            padding: 5px 10px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+    
+            &:hover {
+              background-color: #c0392b;
+            }
+          }
+        }
       }
 
-      .deleteButton {
-        margin-left: 10px;
-        padding: 5px 10px;
-        background-color: #e74c3c;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
+      .editComment {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    
+        .commentTextarea {
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          font-size: 1rem;
+        }
 
-        &:hover {
-          background-color: #c0392b;
+        .saveButton {
+          margin-block: 10px;
+          padding: 5px 10px;
+          background-color: #28a745;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+  
+          &:hover {
+            background-color: #218838;
+          }
+        }
+  
+        .cancelButton {
+          padding: 5px 10px;
+          background-color: #e74c3c;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+  
+          &:hover {
+            background-color: #c0392b;
+          }
         }
       }
     }
@@ -144,7 +201,6 @@
       border: 1px solid #ccc;
       border-radius: 5px;
       font-size: 1rem;
-      resize: none;
     }
 
     .submitButton {

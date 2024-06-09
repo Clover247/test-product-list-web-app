@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from 'axios';
-import styles from './ProductsView.module.scss';
+import axios from "axios";
+import styles from "./ProductsView.module.scss";
 import EditProductModal from "../../modals/EditProductModal";
 
 interface ProductComment {
@@ -28,21 +28,24 @@ const ProductView: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [newComment, setNewComment] = useState<string>("");
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editingCommentText, setEditingCommentText] = useState<string>("");
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/products/${id}`);
+        const response = await axios.get(`${BASE_URL}/products/${id}`);
         setProduct(response.data);
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch product');
+        setError("Failed to fetch product");
         setLoading(false);
       }
     };
 
     fetchProduct();
-  }, [id]);
+  }, [BASE_URL, id]);
 
   const handleUpdateProduct = async (updatedProduct: Product) => {
     setProduct(updatedProduct);
@@ -52,12 +55,14 @@ const ProductView: React.FC = () => {
     if (!product) return;
 
     try {
-      const updatedComments = product.comments.filter(comment => comment.id !== commentId);
+      const updatedComments = product.comments.filter(
+        (comment) => comment.id !== commentId
+      );
       const updatedProduct = { ...product, comments: updatedComments };
-      await axios.put(`http://localhost:5000/products/${product.id}`, updatedProduct);
+      await axios.put(`${BASE_URL}/products/${product.id}`, updatedProduct);
       setProduct(updatedProduct);
     } catch (err) {
-      console.error('Failed to delete comment', err);
+      console.error("Failed to delete comment", err);
     }
   };
 
@@ -74,26 +79,34 @@ const ProductView: React.FC = () => {
         ...product,
         comments: [...product.comments, newCommentObj],
       };
-      await axios.put(`http://localhost:5000/products/${product.id}`, updatedProduct);
+      await axios.put(`${BASE_URL}/products/${product.id}`, updatedProduct);
       setProduct(updatedProduct);
       setNewComment("");
     } catch (err) {
-      console.error('Failed to add comment', err);
+      console.error("Failed to add comment", err);
     }
   };
 
-  const handleEditComment = async (commentId: string, newDescription: string) => {
-    if (!product) return;
+  const handleEditComment = async (commentId: string) => {
+    if (!product || editingCommentId !== commentId) return;
 
     try {
-      const updatedComments = product.comments.map(comment =>
-        comment.id === commentId ? { ...comment, description: newDescription, date: new Date().toISOString() } : comment
+      const updatedComments = product.comments.map((comment) =>
+        comment.id === commentId
+          ? {
+              ...comment,
+              description: editingCommentText,
+              date: new Date().toISOString(),
+            }
+          : comment
       );
       const updatedProduct = { ...product, comments: updatedComments };
-      await axios.put(`http://localhost:5000/products/${product.id}`, updatedProduct);
+      await axios.put(`${BASE_URL}/products/${product.id}`, updatedProduct);
       setProduct(updatedProduct);
+      setEditingCommentId(null);
+      setEditingCommentText("");
     } catch (err) {
-      console.error('Failed to edit comment', err);
+      console.error("Failed to edit comment", err);
     }
   };
 
@@ -103,7 +116,9 @@ const ProductView: React.FC = () => {
 
   return (
     <div className={styles.productContainer}>
-      <button onClick={() => navigate(-1)} className={styles.backButton}>Back</button>
+      <button onClick={() => navigate(-1)} className={styles.backButton}>
+        Back
+      </button>
       <div className={styles.productDetails}>
         <div className={styles.imageContainer}>
           <img src={product.imageUrl} alt={product.name} />
@@ -112,8 +127,15 @@ const ProductView: React.FC = () => {
           <h1 className={styles.productName}>{product.name}</h1>
           <p>Count: {product.count}</p>
           <p>Weight: {product.weight}</p>
-          <p>Size: {product.size.width} x {product.size.height}</p>
-          <button onClick={() => setIsEditModalOpen(true)} className={styles.editButton}>Edit Product</button>
+          <p>
+            Size: {product.size.width} x {product.size.height}
+          </p>
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className={styles.editButton}
+          >
+            Edit Product
+          </button>
         </div>
       </div>
       <div className={styles.commentsSection}>
@@ -121,13 +143,48 @@ const ProductView: React.FC = () => {
         <ul className={styles.commentsList}>
           {product.comments.map((comment) => (
             <li key={comment.id} className={styles.comment}>
-              <input
-                type="text"
-                value={comment.description}
-                onChange={(e) => handleEditComment(comment.id, e.target.value)}
-                className={styles.commentInput}
-              />
-              <button onClick={() => handleDeleteComment(comment.id)} className={styles.deleteButton}>Delete</button>
+              {editingCommentId === comment.id ? (
+                <div className={styles.editComment}>
+                  <textarea
+                    value={editingCommentText}
+                    onChange={(e) => setEditingCommentText(e.target.value)}
+                    className={styles.commentTextarea}
+                  />
+                  <button
+                    onClick={() => handleEditComment(comment.id)}
+                    className={styles.saveButton}
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setEditingCommentId(null)}
+                    className={styles.cancelButton}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <div className={styles.commentItem}>
+                  <p className={styles.commentText}>{comment.description}</p>
+                  <div className={styles.buttons}>
+                    <button
+                      onClick={() => {
+                        setEditingCommentId(comment.id);
+                        setEditingCommentText(comment.description);
+                      }}
+                      className={styles.editButton}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteComment(comment.id)}
+                      className={styles.deleteButton}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )}
             </li>
           ))}
         </ul>
@@ -138,7 +195,9 @@ const ProductView: React.FC = () => {
             onChange={(e) => setNewComment(e.target.value)}
             className={styles.commentTextarea}
           ></textarea>
-          <button onClick={handleAddComment} className={styles.submitButton}>Submit</button>
+          <button onClick={handleAddComment} className={styles.submitButton}>
+            Submit
+          </button>
         </div>
       </div>
       <EditProductModal

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { fetchProducts } from "../products/productsSlice";
@@ -37,13 +37,18 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [formData, setFormData] = useState<Product>({ ...product });
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({ ...product });
+    }
+  }, [isOpen, product]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name.includes('size.')) {
-      const sizeKey = name.split('.')[1] as 'width' | 'height';
+    if (name.includes("size.")) {
+      const sizeKey = name.split(".")[1] as "width" | "height";
       setFormData((prevData) => ({
         ...prevData,
         size: {
@@ -54,7 +59,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
     } else {
       setFormData((prevData) => ({
         ...prevData,
-        [name]: name === 'count' ? parseInt(value) : value,
+        [name]: name === "count" ? parseInt(value) : value,
       }));
     }
   };
@@ -63,7 +68,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:5000/products/${formData.id}`,
+        `${BASE_URL}/products/${formData.id}`,
         formData
       );
       onUpdateProduct(response.data);
@@ -121,7 +126,9 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
             type="number"
             name="size.height"
             placeholder="Height"
-            value={formData.size.height !== undefined ? formData.size.height : ""}
+            value={
+              formData.size.height !== undefined ? formData.size.height : ""
+            }
             onChange={handleInputChange}
             required
             className={styles.input}
@@ -137,8 +144,16 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
             className={styles.input}
           />
           <div className={styles.buttonContainer}>
-            <button type="submit" className={styles.button}>Save Changes</button>
-            <button type="button" onClick={onClose} className={`${styles.button} ${styles.cancelButton}`}>Cancel</button>
+            <button type="submit" className={styles.button}>
+              Save Changes
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className={`${styles.button} ${styles.cancelButton}`}
+            >
+              Cancel
+            </button>
           </div>
         </form>
       </div>

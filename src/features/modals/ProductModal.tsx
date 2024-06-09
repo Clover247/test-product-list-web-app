@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../app/store";
 import { addNewProduct } from "../products/productsSlice";
@@ -21,11 +21,29 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose }) => {
     weight: "",
   });
 
+  useEffect(() => {
+    if (!isOpen) {
+      setProductData({
+        name: "",
+        imageUrl: "",
+        count: undefined,
+        width: undefined,
+        height: undefined,
+        weight: "",
+      });
+    }
+  }, [isOpen]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProductData((prevData) => ({
       ...prevData,
-      [name]: name === "count" || name === "width" || name === "height" ? (value === "" ? undefined : parseInt(value)) : value,
+      [name]:
+        name === "count" || name === "width" || name === "height"
+          ? value === ""
+            ? undefined
+            : parseInt(value)
+          : value,
     }));
   };
 
@@ -43,19 +61,14 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose }) => {
     dispatch(
       addNewProduct({
         ...sanitizedProductData,
-        size: { width: sanitizedProductData.width, height: sanitizedProductData.height },
+        size: {
+          width: sanitizedProductData.width,
+          height: sanitizedProductData.height,
+        },
         comments: [],
       })
     );
 
-    setProductData({
-      name: "",
-      imageUrl: "",
-      count: undefined,
-      width: undefined,
-      height: undefined,
-      weight: "",
-    });
     onClose();
   };
 
@@ -121,10 +134,13 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose }) => {
             required
             className={styles.input}
           />
-          <button type="submit" className={styles.button}>Add Product</button>
+          <button type="submit" className={styles.button}>
+            Add Product
+          </button>
         </form>
       </div>
     </Modal>
   );
 };
+
 export default ProductModal;
