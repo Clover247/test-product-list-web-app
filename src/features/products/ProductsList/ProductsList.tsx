@@ -95,76 +95,78 @@ const ProductsList: React.FC = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className={styles.productContainer}>
-      <h1 className={styles.header}>Products List</h1>
-      <div className={styles.headerActions}>
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className={styles.header}
-        >
-          Add Product
-        </button>
-        <select value={sortOption} onChange={handleSortChange}>
-          <option value="alphabetical">Sort by Alphabet</option>
-          <option value="count">Sort by Count</option>
-        </select>
-      </div>
-      <div className={styles.productsList}>
-        {sortedProducts.map((product) => (
-          <div
-            key={product.id}
-            className={styles.productCard}
-            onClick={() => handleCardClick(product.id)}
+    <div className={styles.layout}>
+      <div className={styles.productContainer}>
+        <h1 className={styles.header}>Products List</h1>
+        <div className={styles.headerActions}>
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className={styles.header}
           >
-            <div className={styles.imageContainer}>
-              <img src={product.imageUrl} alt={product.name} />
+            Add Product
+          </button>
+          <select value={sortOption} onChange={handleSortChange}>
+            <option value="alphabetical">Sort by Alphabet</option>
+            <option value="count">Sort by Count</option>
+          </select>
+        </div>
+        <div className={styles.productsList}>
+          {sortedProducts.map((product) => (
+            <div
+              key={product.id}
+              className={styles.productCard}
+              onClick={() => handleCardClick(product.id)}
+            >
+              <div className={styles.imageContainer}>
+                <img src={product.imageUrl} alt={product.name} />
+              </div>
+              <div className={styles.productDetails}>
+                <h2>{product.name}</h2>
+                <p>Count: {product.count}</p>
+                <p>Weight: {product.weight}</p>
+                <p>Height: {product.size.height}</p>
+                <p>Width: {product.size.width}</p>
+              </div>
+              <div className={styles.actions}>
+                <button
+                  className={`${styles.edit}`}
+                  onClick={(e) =>
+                    handleButtonClick(e, () => handleEditProduct(product))
+                  }
+                >
+                  Edit
+                </button>
+                <button
+                  className={`${styles.delete}`}
+                  onClick={(e) =>
+                    handleButtonClick(e, () => handleRemoveProduct(product.id))
+                  }
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-            <div className={styles.productDetails}>
-              <h2>{product.name}</h2>
-              <p>Count: {product.count}</p>
-              <p>Weight: {product.weight}</p>
-              <p>Height: {product.size.height}</p>
-              <p>Width: {product.size.width}</p>
-            </div>
-            <div className={styles.actions}>
-              <button
-                className={`${styles.edit}`}
-                onClick={(e) =>
-                  handleButtonClick(e, () => handleEditProduct(product))
-                }
-              >
-                Edit
-              </button>
-              <button
-                className={`${styles.delete}`}
-                onClick={(e) =>
-                  handleButtonClick(e, () => handleRemoveProduct(product.id))
-                }
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-      <ProductModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-      />
-      <ConfirmModal
-        isOpen={isConfirmModalOpen}
-        onClose={() => setIsConfirmModalOpen(false)}
-        onConfirm={confirmRemoveProduct}
-        message="Are you sure you want to delete this product?"
-      />
-      {productToEdit && (
-        <EditProductModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          product={productToEdit}
-          onUpdateProduct={handleUpdateProduct}
+          ))}
+        </div>
+        <ProductModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
         />
-      )}
+        <ConfirmModal
+          isOpen={isConfirmModalOpen}
+          onClose={() => setIsConfirmModalOpen(false)}
+          onConfirm={confirmRemoveProduct}
+          message="Are you sure you want to delete this product?"
+        />
+        {productToEdit && (
+          <EditProductModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            product={productToEdit}
+            onUpdateProduct={handleUpdateProduct}
+          />
+        )}
+      </div>
     </div>
   );
 };
